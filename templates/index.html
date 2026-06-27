@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NODO — Detector de Archivos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo"><span class="logo-bracket">[</span>NODO<span class="logo-bracket">]</span></div>
+      <p class="tagline">Detector de archivos &middot; Perceptrón Simple &middot; ABPro &middot; Cálculo Diferencial</p>
+      <div class="header-status">
+        <span class="status-dot"></span>
+        <span>Modelo cargado</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 01 — Selección de archivo
+    ══════════════════════════════════════ -->
+    <section class="page-section">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <div class="section-info">
+          <h2 class="section-title">Selección de Archivo</h2>
+          <p class="section-sub">Elige un archivo de los datasets de prueba para analizarlo con el perceptrón</p>
+        </div>
+      </div>
+
+      <div class="error-banner" id="errorBanner" hidden role="alert"></div>
+
+      <div class="testfiles-grid">
+        <div class="testfiles-col">
+          <div class="col-header col-legit">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Archivos legítimos
+          </div>
+          <ul class="file-list" id="listLegitimos"></ul>
+        </div>
+        <div class="testfiles-col">
+          <div class="col-header col-susp">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Archivos sospechosos
+          </div>
+          <ul class="file-list" id="listSospechosos"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 02 — Red Neuronal
+    ══════════════════════════════════════ -->
+    <section class="page-section" id="secRed" hidden>
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <div class="section-info">
+          <h2 class="section-title">Red Neuronal</h2>
+          <p class="section-sub">Perceptrón simple — visualización de entradas, pesos y activación</p>
+        </div>
+      </div>
+
+      <div class="card network-card">
+        <svg id="networkSvg" viewBox="0 0 860 430"
+             xmlns="http://www.w3.org/2000/svg"
+             xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN 03 — Informe de análisis
+    ══════════════════════════════════════ -->
+    <section class="page-section" id="secInforme" hidden>
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <div class="section-info">
+          <h2 class="section-title">Informe de Análisis</h2>
+          <p class="section-sub">Características extraídas, cálculo completo y veredicto final</p>
+        </div>
+      </div>
+
+      <!-- Resumen del archivo -->
+      <div class="card summary-card">
+        <h3 class="card-title">Resumen del archivo</h3>
+        <div class="summary-file-header" id="summaryFileHeader"></div>
+        <div class="summary-body">
+          <div class="summary-col">
+            <p class="summary-section-title">Análisis de factores</p>
+            <div id="summaryFactors" class="summary-factors"></div>
+          </div>
+          <div class="summary-col">
+            <p class="summary-section-title">Punto de inflexión</p>
+            <p class="z-explanation" id="zExplanation"></p>
+            <div class="z-track-wrapper">
+              <div class="z-track">
+                <div class="z-half z-half-legit">Legítimo</div>
+                <div class="z-half z-half-susp">Sospechoso</div>
+                <div class="z-center">
+                  <span class="z-center-top">z = 0</span>
+                  <span class="z-center-line-bar"></span>
+                  <span class="z-center-bot">σ = 50%</span>
+                </div>
+                <div class="z-marker" id="zMarker">
+                  <div class="z-marker-dot" id="zMarkerDot"></div>
+                  <span class="z-marker-label" id="zMarkerLabel"></span>
+                </div>
+              </div>
+              <div class="z-axis-labels"><span>−5</span><span>0</span><span>+5</span></div>
+            </div>
+            <div class="z-dominant" id="zDominant"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Características + Veredicto -->
+      <div class="informe-row-2">
+        <div class="card features-card">
+          <h3 class="card-title">Características extraídas</h3>
+          <div id="featuresList" class="features-list"></div>
+        </div>
+
+        <div class="verdict-gauge-col">
+          <div class="card gauge-card">
+            <h3 class="card-title">Nivel de riesgo</h3>
+            <div class="gauge-wrapper">
+              <svg id="gaugeSvg" viewBox="0 0 220 125" xmlns="http://www.w3.org/2000/svg"></svg>
+              <div class="confidence-value" id="confidenceValue">—</div>
+              <p class="confidence-label">confianza de malicioso</p>
+            </div>
+          </div>
+
+          <div class="card verdict-card">
+            <h3 class="card-title">Veredicto</h3>
+            <div class="verdict-body">
+              <div class="verdict-icon" id="verdictIcon"></div>
+              <div class="verdict-text" id="verdictText"></div>
+              <div class="verdict-desc" id="verdictDesc"></div>
+              <div class="verdict-file" id="verdictFile"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cálculo matemático -->
+      <div class="card math-card">
+        <h3 class="card-title">
+          Cálculo matemático paso a paso
+          <button class="collapse-btn" id="collapseBtn" aria-expanded="true">▲</button>
+        </h3>
+        <div class="math-body" id="mathBody">
+          <div id="mathContent"></div>
+        </div>
+      </div>
+
+      <!-- Historial -->
+      <div class="card history-card" id="historyCard" hidden>
+        <h3 class="card-title">Historial de sesión</h3>
+        <div class="history-scroll">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>#</th><th>Archivo</th><th>Tamaño</th><th>Entropía</th>
+                <th>Ext. sosp.</th><th>Chars esp.</th><th>z</th>
+                <th>Confianza</th><th>Resultado</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>NODO &middot; Proyecto ABPro &middot; Cálculo Diferencial &middot; Perceptrón Simple</p>
+  </footer>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>

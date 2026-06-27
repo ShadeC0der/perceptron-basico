@@ -26,22 +26,34 @@ TAMANO_MAX_KB = 500.0  # cap de normalización — archivos más grandes quedan 
 
 
 def extraer_caracteristicas(ruta_archivo):
-    tamano_kb = os.path.getsize(ruta_archivo) / 1024
-    entropia = calcular_entropia(ruta_archivo)
+    caract, _ = extraer_todo(ruta_archivo)
+    return caract
 
-    extension = ruta_archivo.split('.')[-1].lower()
+
+def extraer_todo(ruta_archivo):
+    """Devuelve (caract_norm, info_raw) con valores crudos para el resumen."""
+    tamano_kb = os.path.getsize(ruta_archivo) / 1024
+    entropia  = calcular_entropia(ruta_archivo)
+
+    extension            = ruta_archivo.split('.')[-1].lower()
     extension_sospechosa = 1 if extension in ['exe', 'bat', 'vbs', 'sh', 'cmd'] else 0
 
     with open(ruta_archivo, 'rb') as f:
         muestra = f.read(1000)
 
-    if len(muestra) == 0:
-        chars_especiales = 0.0
-    else:
-        chars_especiales = sum(1 for b in muestra if b < 32 or b > 126) / len(muestra)
+    chars_especiales = (
+        sum(1 for b in muestra if b < 32 or b > 126) / len(muestra)
+        if muestra else 0.0
+    )
 
-    # Normalizar a [0, 1] para que todas las features tengan el mismo peso
     tamano_norm   = min(tamano_kb / TAMANO_MAX_KB, 1.0)
     entropia_norm = entropia / 8.0
 
-    return [tamano_norm, entropia_norm, extension_sospechosa, chars_especiales]
+    caract = [tamano_norm, entropia_norm, extension_sospechosa, chars_especiales]
+    info   = {
+        'tamano_kb': round(tamano_kb, 2),
+        'entropia':  round(entropia, 4),
+        'extension': extension,
+        'chars_pct': round(chars_especiales * 100, 1),
+    }
+    return caract, info

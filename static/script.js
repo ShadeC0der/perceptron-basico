@@ -35,13 +35,38 @@ collapseBtn.addEventListener('click', () => {
   mathBody.classList.toggle('collapsed', isOpen);
 });
 
-/* ══ File list ═══════════════════════════════════════════ */
-const EXT_ICONS = {
-  py:'🐍', js:'📜', html:'🌐', css:'🎨',
-  csv:'📊', json:'📋', txt:'📄', xml:'📄', sh:'📄',
-  exe:'⚙️', bat:'⚙️', vbs:'⚙️', cmd:'⚙️',
+/* ══ Icon helper ═════════════════════════════════════════ */
+const ICON_PATHS = {
+  'file':       '<path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/>',
+  'file-text':  '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+  'file-code':  '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="10 13 8 15 10 17"/><polyline points="14 13 16 15 14 17"/>',
+  'terminal':   '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>',
+  'cpu':        '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>',
+  'braces':     '<path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1"/><path d="M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1"/>',
+  'table2':     '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/>',
+  'globe':      '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  'palette':    '<path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>',
+  'shield-ok':  '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>',
+  'shield-bad': '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
 };
-const extIcon = n => EXT_ICONS[n.split('.').pop()?.toLowerCase()] ?? '📁';
+function icon(name, size = 14) {
+  const p = ICON_PATHS[name] ?? ICON_PATHS['file'];
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+}
+
+/* ══ File list ═══════════════════════════════════════════ */
+const EXT_ICON_MAP = {
+  py:'file-code', js:'file-code', ts:'file-code', jsx:'file-code', tsx:'file-code',
+  rb:'file-code', php:'file-code', java:'file-code', c:'file-code', cpp:'file-code', go:'file-code',
+  html:'globe', css:'palette',
+  json:'braces',
+  csv:'table2', xlsx:'table2',
+  txt:'file-text', md:'file-text', xml:'file-text', yaml:'file-text', yml:'file-text',
+  ini:'file-text', cfg:'file-text', dat:'file-text',
+  sh:'terminal', bash:'terminal',
+  exe:'cpu', bat:'terminal', vbs:'terminal', cmd:'terminal',
+};
+const extIcon = n => icon(EXT_ICON_MAP[n.split('.').pop()?.toLowerCase()] ?? 'file');
 
 function buildFileList(ul, files, cat) {
   ul.innerHTML = '';
@@ -53,7 +78,7 @@ function buildFileList(ul, files, cat) {
     btn.dataset.categoria = cat;
     btn.dataset.nombre    = nombre;
     btn.innerHTML = `
-      <span class="file-icon">${extIcon(nombre)}</span>
+      <span class="file-icon" aria-hidden="true">${extIcon(nombre)}</span>
       <span class="file-name">${nombre}</span>
       ${ext ? `<span class="file-ext-badge ${cat === 'sospechosos' ? 'ext-susp' : 'ext-legit'}">.${ext}</span>` : ''}
     `;
@@ -101,7 +126,7 @@ loadTestFiles();
 
 /* ══ UI helpers ══════════════════════════════════════════ */
 function showError(msg) {
-  errorBanner.textContent = `⚠ ${msg}`;
+  errorBanner.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:-2px;margin-right:6px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>${msg}`;
   errorBanner.hidden = false;
 }
 function hideError() { errorBanner.hidden = true; }
@@ -252,8 +277,8 @@ function drawNetwork(data) {
 
     const normW  = Math.abs(f.peso) / maxW;
     const col    = f.peso >= 0 ? '#22d3ee' : '#f97316';
-    const sw     = 1.5 + normW * 5;
-    const op     = 0.2 + normW * 0.7;
+    const sw     = 1 + normW * 3;
+    const op     = 0.3 + normW * 0.6;
     const pid    = `p${i}`;
     const d      = `M ${x1} ${y1} C ${bx} ${y1} ${bx} ${y2} ${x2} ${y2}`;
 
@@ -405,7 +430,7 @@ function drawNetwork(data) {
   }));
   networkSvg.appendChild(txt('σ(z)', {
     x: NEX, y: NEY + 37,
-    'text-anchor': 'middle', fill: '#253144',
+    'text-anchor': 'middle', fill: '#4f627a',
     'font-size': '10', 'font-family': 'monospace',
   }));
 
@@ -451,17 +476,17 @@ function drawNetwork(data) {
 
   /* ── Leyenda ─────────────────────────────────────────── */
   const ly = 400;
-  [[35, '#22d3ee', 'Peso positivo'], [200, '#f97316', 'Peso negativo']].forEach(([lx, lc, label]) => {
-    networkSvg.appendChild(el('rect', { x: lx, y: ly, width: 10, height: 10, rx: 2, fill: lc, opacity: 0.7 }));
+  [[35, '#22d3ee', 'Peso positivo'], [195, '#f97316', 'Peso negativo']].forEach(([lx, lc, label]) => {
+    networkSvg.appendChild(el('rect', { x: lx, y: ly, width: 10, height: 10, rx: 2, fill: lc, opacity: 0.8 }));
     networkSvg.appendChild(txt(label, {
-      x: lx + 15, y: ly + 9,
+      x: lx + 16, y: ly + 9,
       fill: '#4f627a', 'font-size': '10', 'font-family': 'monospace',
     }));
   });
-  networkSvg.appendChild(txt('El grosor de la línea indica la magnitud del peso', {
-    x: 400, y: ly + 9,
-    'text-anchor': 'middle',
-    fill: '#253144', 'font-size': '10', 'font-family': 'monospace',
+  networkSvg.appendChild(txt('El grosor indica la magnitud del peso', {
+    x: 835, y: ly + 9,
+    'text-anchor': 'end',
+    fill: '#4f627a', 'font-size': '10', 'font-family': 'monospace',
   }));
 }
 
@@ -704,7 +729,7 @@ function drawGauge(confidence) {
   [0,.25,.5,.75,1].forEach(t => {
     const p1=pt(t,r+5), p2=pt(t,r+12), pl=pt(t,r+22);
     gaugeSvg.appendChild(el('line', { x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y, stroke:'#1a2438','stroke-width':1.5 }));
-    gaugeSvg.appendChild(txt(`${(t*100).toFixed(0)}%`, { x:pl.x,y:pl.y+3,'text-anchor':'middle',fill:'#253144','font-size':'8.5','font-family':'monospace' }));
+    gaugeSvg.appendChild(txt(`${(t*100).toFixed(0)}%`, { x:pl.x,y:pl.y+3,'text-anchor':'middle',fill:'#4f627a','font-size':'8.5','font-family':'monospace' }));
   });
   const np = pt(confidence, rn);
   gaugeSvg.appendChild(el('line', { x1:cx,y1:cy,x2:np.x.toFixed(2),y2:np.y.toFixed(2), stroke:'#dde4f0','stroke-width':2.5,'stroke-linecap':'round' }));
@@ -718,7 +743,7 @@ function drawGauge(confidence) {
 /* ══ Verdict ═════════════════════════════════════════════ */
 function renderVerdict(data) {
   const ok = data.resultado === 'legitimo';
-  verdictIcon.textContent = ok ? '✓' : '⚠';
+  verdictIcon.innerHTML   = icon(ok ? 'shield-ok' : 'shield-bad', 48);
   verdictIcon.style.color = ok ? 'var(--primary)' : 'var(--danger)';
   verdictText.textContent = ok ? 'LEGÍTIMO' : 'SOSPECHOSO';
   verdictText.className   = `verdict-text ${data.resultado}`;

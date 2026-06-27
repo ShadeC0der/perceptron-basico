@@ -206,7 +206,7 @@ body {
 }
 .file-btn:hover       { background: var(--border); color: var(--text); }
 .file-btn.active      { background: var(--border-hi); color: var(--text); }
-.file-icon            { font-size: 0.95rem; flex-shrink: 0; }
+.file-icon            { flex-shrink: 0; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
 .file-name            { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .file-ext-badge {
   font-size: 0.65rem; font-weight: 700;
@@ -289,7 +289,7 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: var(--text-dim);
+  color: var(--text-muted);
   margin-bottom: 0.85rem;
 }
 .summary-factors { display: flex; flex-direction: column; gap: 0.65rem; }
@@ -304,7 +304,7 @@ body {
 .factor-dot.alto     { background: var(--warning); }
 .factor-dot.medio    { background: #7a8fa8; }
 .factor-dot.bajo     { background: var(--primary); }
-.factor-dot.neutro   { background: var(--text-dim); }
+.factor-dot.neutro   { background: var(--border-hi); }
 .factor-nombre { font-weight: 600; color: var(--text); flex-shrink: 0; min-width: 110px; }
 .factor-raw    { font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); }
 
@@ -322,14 +322,14 @@ body {
   user-select: none;
 }
 .z-half-legit {
-  background: rgba(0,212,170,.1); color: rgba(0,212,170,.4);
+  background: rgba(0,212,170,.1); color: rgba(0,212,170,.75);
   border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-  border: 1px solid rgba(0,212,170,.15); border-right: none;
+  border: 1px solid rgba(0,212,170,.2); border-right: none;
 }
 .z-half-susp {
-  background: rgba(255,64,64,.1); color: rgba(255,64,64,.4);
+  background: rgba(255,64,64,.1); color: rgba(255,64,64,.75);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  border: 1px solid rgba(255,64,64,.15); border-left: none;
+  border: 1px solid rgba(255,64,64,.2); border-left: none;
 }
 .z-center {
   position: absolute; left: 50%; top: 0; bottom: 0;
@@ -357,7 +357,7 @@ body {
 }
 .z-axis-labels {
   display: flex; justify-content: space-between;
-  font-family: var(--mono); font-size: 0.6rem; color: var(--text-dim);
+  font-family: var(--mono); font-size: 0.6rem; color: var(--text-muted);
   padding: 0.2rem 0.1rem 0;
 }
 .z-dominant {
@@ -366,7 +366,7 @@ body {
   background: var(--border); border-radius: var(--radius-sm);
   line-height: 1.5;
 }
-.z-dominant .dom-label  { color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
+.z-dominant .dom-label  { color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
 .z-dominant .dom-name   { color: var(--text); font-weight: 600; margin: 0 0.3rem; }
 .z-dominant .dom-contrib { font-family: var(--mono); font-size: 0.75rem; }
 
@@ -381,6 +381,7 @@ body {
   align-items: start;
 }
 .verdict-gauge-col { display: flex; flex-direction: column; gap: 1.5rem; }
+.features-card { align-self: start; }
 
 /* Features */
 .features-list { display: flex; flex-direction: column; gap: 1.35rem; }
@@ -397,7 +398,7 @@ body {
   display: flex; gap: 0.75rem; align-items: center;
   font-family: var(--mono); font-size: 0.73rem; color: var(--text-muted);
 }
-.meta-peso { color: var(--text-dim); }
+.meta-peso { color: var(--text-muted); }
 .meta-peso-val.pos { color: var(--weight-pos); }
 .meta-peso-val.neg { color: var(--weight-neg); }
 .meta-sep          { color: var(--text-dim); }
@@ -417,7 +418,8 @@ body {
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; min-height: 140px; gap: 0.75rem; text-align: center;
 }
-.verdict-icon { font-size: 3rem; line-height: 1; filter: drop-shadow(0 0 12px currentColor); }
+.verdict-icon { line-height: 1; filter: drop-shadow(0 0 12px currentColor); }
+.verdict-icon svg { display: block; }
 .verdict-text { font-size: 1.5rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
 .verdict-text.legitimo   { color: var(--primary); }
 .verdict-text.sospechoso { color: var(--danger);  }
@@ -432,6 +434,7 @@ body {
 .collapse-btn {
   background: none; border: none; color: var(--text-muted); cursor: pointer;
   font-size: 0.7rem; padding: 0; line-height: 1;
+  display: flex; align-items: center;
   transition: transform 0.25s, color 0.15s;
 }
 .collapse-btn:hover { color: var(--primary); }
